@@ -17,7 +17,7 @@ class ModelFactory:
     """Factory for creating models used in dataset bias experiments."""
     
     SUPPORTED_MODELS = {
-        'alexnet': 'alexnet',
+        'alexnet': 'legacy_alexnet.in1k',
         'vgg16': 'vgg16',
         'resnet50': 'resnet50',
         'vit_small': 'vit_small_patch16_224',
@@ -55,15 +55,23 @@ class ModelFactory:
         timm_name = cls.SUPPORTED_MODELS[model_name]
         
         logger.info(f"Creating {model_name} ({timm_name}) with {num_classes} classes")
-        
-        # Create model using timm
-        model = timm.create_model(
-            timm_name,
-            pretrained=pretrained,
-            num_classes=num_classes,
-            drop_rate=drop_rate,
-            drop_path_rate=drop_path_rate,
-        )
+
+        # Handle special cases
+        if model_name == 'alexnet':
+            # Use torchvision AlexNet
+            from torchvision.models import alexnet
+            model = alexnet(pretrained=pretrained)
+            # Replace classifier for our number of classes
+            model.classifier[6] = nn.Linear(model.classifier[6].in_features, num_classes)
+        else:
+            # Create model using timm
+            model = timm.create_model(
+                timm_name,
+                pretrained=pretrained,
+                num_classes=num_classes,
+                drop_rate=drop_rate,
+                drop_path_rate=drop_path_rate,
+            )
         
         # Log model info
         total_params = sum(p.numel() for p in model.parameters())

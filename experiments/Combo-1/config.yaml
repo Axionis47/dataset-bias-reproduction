@@ -1,0 +1,75 @@
+data:
+  base_dir: ~/dataset_bias_data
+  cache_thumbnails: true
+  n_per_dataset: 10000
+  thumbnail_size: 500
+  train_transform:
+    cutmix:
+      alpha: 1.0
+    mixup:
+      alpha: 0.8
+    randaug:
+      magnitude: 9
+      probability: 0.5
+    resize_crop: 224
+  val_size: 1000
+  val_transform:
+    center_crop: 224
+    resize: 256
+experiment:
+  chance_accuracy: 0.333
+  datasets:
+  - yfcc
+  - cc
+  - datacomp
+  description: '3-way dataset classification: YFCC100M + CC12M + DataComp-1B'
+  n_classes: 3
+  name: Combo-1
+hardware:
+  device: auto
+  num_workers: 4
+  persistent_workers: true
+  pin_memory: true
+logging:
+  log_every: 50
+  log_level: INFO
+  metrics:
+  - accuracy
+  - top1_accuracy
+  - loss
+  - learning_rate
+  save_logs: true
+  use_wandb: false
+model:
+  architecture: convnext_tiny
+  drop_path_rate: 0.1
+  drop_rate: 0.0
+  num_classes: 3
+  pretrained: false
+paths:
+  checkpoints_dir: experiments/Combo-1/checkpoints
+  data_dir: data
+  experiments_dir: experiments
+  logs_dir: logs
+  results_dir: experiments/Combo-1/results
+reproducibility:
+  benchmark: false
+  deterministic: true
+  seed: 42
+training:
+  batch_size: 32
+  betas:
+  - 0.9
+  - 0.95
+  early_stopping_patience: 10
+  epochs: 2
+  gradient_accumulation_steps: 8
+  label_smoothing: 0.1
+  learning_rate: 0.001
+  optimizer: adamw
+  save_best: true
+  save_every: 5
+  scheduler: cosine
+  use_amp: true
+  warmup_epochs: 5
+  weight_decay: 0.3

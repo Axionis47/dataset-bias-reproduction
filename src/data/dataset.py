@@ -206,14 +206,14 @@ class MixUpCutMix:
             return images, labels
         
         # Convert labels to one-hot
-        labels_onehot = torch.zeros(labels.size(0), self.num_classes)
+        labels_onehot = torch.zeros(labels.size(0), self.num_classes, device=labels.device)
         labels_onehot.scatter_(1, labels.unsqueeze(1), 1)
         
         if torch.rand(1) < self.switch_prob:
             # MixUp
             lam = torch.distributions.Beta(self.mixup_alpha, self.mixup_alpha).sample()
             batch_size = images.size(0)
-            index = torch.randperm(batch_size)
+            index = torch.randperm(batch_size, device=images.device)
             
             mixed_images = lam * images + (1 - lam) * images[index]
             mixed_labels = lam * labels_onehot + (1 - lam) * labels_onehot[index]
@@ -223,7 +223,7 @@ class MixUpCutMix:
             # CutMix
             lam = torch.distributions.Beta(self.cutmix_alpha, self.cutmix_alpha).sample()
             batch_size = images.size(0)
-            index = torch.randperm(batch_size)
+            index = torch.randperm(batch_size, device=images.device)
             
             # Get random box
             W, H = images.size(-1), images.size(-2)
@@ -231,8 +231,8 @@ class MixUpCutMix:
             cut_w = (W * cut_rat).int()
             cut_h = (H * cut_rat).int()
             
-            cx = torch.randint(W, (1,))
-            cy = torch.randint(H, (1,))
+            cx = torch.randint(W, (1,), device=images.device)
+            cy = torch.randint(H, (1,), device=images.device)
             
             bbx1 = torch.clamp(cx - cut_w // 2, 0, W)
             bby1 = torch.clamp(cy - cut_h // 2, 0, H)
