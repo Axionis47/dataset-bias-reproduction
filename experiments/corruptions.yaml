@@ -1,0 +1,115 @@
+# Corruption Robustness Evaluation Configuration
+# Evaluates trained models on corrupted validation data at multiple severities
+
+experiment:
+  name: "corruption_robustness"
+  description: "Disturbance/corruption robustness evaluation suite"
+  mode: "eval_only"  # or "train_and_eval"
+
+# Base experiment to evaluate
+base_experiment:
+  combo: "Combo-1"
+  checkpoint: "experiments/Combo-1/best.ckpt"
+  config: "experiments/Combo-1.yaml"
+
+# Corruption configuration
+corruptions:
+  # Noise corruptions
+  gaussian_noise:
+    severities: [1, 2, 3, 4, 5]
+    params:
+      std: [0.05, 0.10, 0.20, 0.30, 0.40]
+  
+  shot_noise:
+    severities: [1, 2, 3, 4, 5]
+    params:
+      scale: [10, 20, 40, 60, 80]
+  
+  impulse_noise:
+    severities: [1, 2, 3, 4, 5]
+    params:
+      prob: [0.01, 0.03, 0.06, 0.10, 0.15]
+  
+  # Blur corruptions
+  defocus_blur:
+    severities: [1, 2, 3, 4, 5]
+    params:
+      kernel_size: [3, 5, 7, 9, 11]
+  
+  motion_blur:
+    severities: [1, 2, 3, 4, 5]
+    params:
+      length: [3, 5, 7, 9, 11]
+      angle: [0, 45, 90, 135, 180]  # Will be randomly sampled
+  
+  zoom_blur:
+    severities: [1, 2, 3, 4, 5]
+    params:
+      sigma: [0.5, 1.0, 1.5, 2.0, 2.5]
+  
+  # Compression corruptions
+  jpeg_compression:
+    severities: [1, 2, 3, 4, 5]
+    params:
+      quality: [80, 60, 40, 30, 20]
+  
+  pixelate:
+    severities: [1, 2, 3, 4, 5]
+    params:
+      scale: [0.9, 0.75, 0.6, 0.5, 0.4]  # Downscale fraction
+  
+  # Photometric corruptions
+  brightness:
+    severities: [1, 2, 3, 4, 5]
+    params:
+      delta: [0.1, 0.2, 0.3, 0.4, 0.5]
+  
+  contrast:
+    severities: [1, 2, 3, 4, 5]
+    params:
+      factor: [0.8, 0.6, 0.4, 0.3, 0.2]
+  
+  saturation:
+    severities: [1, 2, 3, 4, 5]
+    params:
+      factor: [0.8, 0.6, 0.4, 0.3, 0.2]
+  
+  hue_shift:
+    severities: [1, 2, 3, 4, 5]
+    params:
+      delta: [0.05, 0.1, 0.15, 0.2, 0.25]
+
+# Evaluation configuration
+evaluation:
+  val_subsample: 5000  # Keep laptop-friendly
+  batch_size: 64
+  num_workers: 4
+  
+  # Metrics to compute
+  metrics:
+    - "top1_accuracy"
+    - "top3_accuracy"  # For multi-class
+    - "loss"
+    - "confusion_matrix"
+
+# Output configuration
+output:
+  save_corrupted_samples: true  # Save example corrupted images
+  samples_per_corruption: 10
+  results_dir: "experiments/{combo}/corruptions"
+  
+  # Generate plots
+  plots:
+    accuracy_vs_severity: true
+    corruption_comparison: true
+    sample_gallery: true
+
+# Reproducibility
+reproducibility:
+  seed: 42
+  deterministic: true
+
+# Hardware
+hardware:
+  device: "auto"
+  use_amp: true

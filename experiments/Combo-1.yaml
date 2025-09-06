@@ -1,0 +1,103 @@
+# Combo-1: YFCC + CC + DataComp (YCD) - 3-way classification
+# Laptop-scaled configuration for Mac M4 16GB RAM
+
+experiment:
+  name: "Combo-1"
+  description: "3-way dataset classification: YFCC100M + CC12M + DataComp-1B"
+  datasets: ["yfcc", "cc", "datacomp"]
+  n_classes: 3
+  chance_accuracy: 0.333
+
+# Data configuration
+data:
+  base_dir: "~/dataset_bias_data"
+  n_per_dataset: 10000  # Scaled from 1M in paper
+  val_size: 1000
+  cache_thumbnails: true
+  thumbnail_size: 500
+  
+  # Preprocessing
+  train_transform:
+    resize_crop: 224
+    randaug:
+      magnitude: 9
+      probability: 0.5
+    mixup:
+      alpha: 0.8
+    cutmix:
+      alpha: 1.0
+    
+  val_transform:
+    resize: 256
+    center_crop: 224
+
+# Model configuration
+model:
+  architecture: "convnext_tiny"  # 27M parameters
+  num_classes: 3
+  pretrained: false
+  drop_rate: 0.0
+  drop_path_rate: 0.1
+
+# Training configuration
+training:
+  # Optimizer
+  optimizer: "adamw"
+  learning_rate: 1e-3
+  weight_decay: 0.3
+  betas: [0.9, 0.95]
+  
+  # Scheduler
+  scheduler: "cosine"
+  warmup_epochs: 5  # Scaled from 20 in paper
+  
+  # Training loop
+  epochs: 30  # Scaled from 300 in paper
+  batch_size: 32  # Will auto-tune for MPS memory
+  gradient_accumulation_steps: 8  # Effective batch size = 256
+  
+  # Regularization
+  label_smoothing: 0.1
+  
+  # Mixed precision
+  use_amp: true
+  
+  # Checkpointing
+  save_every: 5
+  save_best: true
+  early_stopping_patience: 10
+
+# Hardware configuration
+hardware:
+  device: "auto"  # Will detect MPS/CPU automatically
+  num_workers: 4
+  pin_memory: true
+  persistent_workers: true
+
+# Logging configuration
+logging:
+  log_level: "INFO"
+  log_every: 50
+  save_logs: true
+  use_wandb: false  # Disabled by default
+  
+  # Metrics to track
+  metrics:
+    - "accuracy"
+    - "top1_accuracy"
+    - "loss"
+    - "learning_rate"
+
+# Reproducibility
+reproducibility:
+  seed: 42
+  deterministic: true
+  benchmark: false
+
+# Paths
+paths:
+  data_dir: "data"
+  experiments_dir: "experiments"
+  logs_dir: "logs"
+  checkpoints_dir: "experiments/Combo-1/checkpoints"
+  results_dir: "experiments/Combo-1/results"

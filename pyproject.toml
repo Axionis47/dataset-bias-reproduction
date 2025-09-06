@@ -1,0 +1,130 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dataset-bias-reproduction"
+version = "1.0.0"
+description = "Reproduction of 'A Decade's Battle on Dataset Bias: Are We There Yet?' paper"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "Dataset Bias Reproduction Team"},
+]
+maintainers = [
+    {name = "Dataset Bias Reproduction Team"},
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: MacOS",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Scientific/Engineering :: Image Recognition",
+]
+requires-python = ">=3.11"
+dependencies = [
+    "torch>=2.0.0",
+    "torchvision>=0.15.0",
+    "timm>=0.9.0",
+    "opencv-python>=4.8.0",
+    "Pillow>=10.0.0",
+    "imagehash>=4.3.0",
+    "numpy>=1.24.0",
+    "pandas>=2.0.0",
+    "scikit-learn>=1.3.0",
+    "pyyaml>=6.0",
+    "typer>=0.9.0",
+    "rich>=13.0.0",
+    "tqdm>=4.65.0",
+    "matplotlib>=3.7.0",
+    "seaborn>=0.12.0",
+    "aiohttp>=3.8.0",
+    "requests>=2.31.0",
+    "PyPDF2>=3.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-asyncio>=0.21.0",
+    "black>=23.0.0",
+    "isort>=5.12.0",
+    "flake8>=6.0.0",
+    "pre-commit>=3.0.0",
+    "jupyter>=1.0.0",
+    "notebook>=7.0.0",
+]
+wandb = [
+    "wandb>=0.15.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/Axionis47/dataset-bias-reproduction"
+Repository = "https://github.com/Axionis47/dataset-bias-reproduction"
+Issues = "https://github.com/Axionis47/dataset-bias-reproduction/issues"
+Documentation = "https://github.com/Axionis47/dataset-bias-reproduction#readme"
+
+[project.scripts]
+dataset-bias-train = "src.train.trainer:main"
+dataset-bias-eval = "src.eval.evaluator:main"
+dataset-bias-corrupt = "src.eval.corruptions:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["src*"]
+
+[tool.black]
+line-length = 88
+target-version = ['py311']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+line_length = 88
+known_first_party = ["src"]
+
+[tool.flake8]
+max-line-length = 88
+extend-ignore = ["E203", "W503"]
+exclude = [
+    ".git",
+    "__pycache__",
+    "build",
+    "dist",
+    ".venv",
+    "venv",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "-v",
+    "--tb=short",
+    "--strict-markers",
+]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as integration tests",
+    "smoke: marks tests as smoke tests",
+]
