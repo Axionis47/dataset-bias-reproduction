@@ -28,12 +28,8 @@ class DataCompDownloader(BaseDownloader):
 
     def __init__(self, base_dir: str = "~/dataset_bias_data", **kwargs):
         super().__init__("datacomp", base_dir, **kwargs)
-        # DataComp dataset URLs - using the medium scale for laptop reproduction
-        self.base_url = "https://huggingface.co/datasets/mlfoundations/datacomp_pools"
-        self.metadata_urls = {
-            'medium': 'https://huggingface.co/datasets/mlfoundations/datacomp_pools/resolve/main/medium_pool/metadata_0000.parquet',
-            'small': 'https://huggingface.co/datasets/mlfoundations/datacomp_pools/resolve/main/small_pool/metadata_0000.parquet',
-        }
+        # DataComp dataset URLs - using HuggingFace datasets API
+        self.dataset_name = "mlfoundations/datacomp_1b"
 
     def get_dataset_info(self) -> Dict:
         """Get DataComp dataset information."""

@@ -1,0 +1,104 @@
+{
+  "pipeline_version": "1.0.0",
+  "start_time": 1757193070.3523571,
+  "phases": {
+    "smoke_test": {
+      "status": "SUCCESS",
+      "timestamp": 1757193074.97103,
+      "details": {
+        "command": "./venv/bin/python scripts/smoke_test.py",
+        "stdout": "\ud83d\ude80 Dataset Bias Reproduction - Smoke Test\nRunning quick end-to-end verification...\n\nTesting MPS Availability\n\u2705 MPS is available\n\u2705 MPS tensor operations work: torch.Size([10, 10])\n\nTesting Model Creation\n\u2705 convnext_tiny: torch.Size([2, 3])\n\u2705 resnet50: torch.Size([2, 3])\n\u2705 alexnet: torch.Size([2, 3])\n\nTesting Data Transforms\n\u2705 Data transforms work correctly\n\nTesting Configuration Loading\n\u2705 Configuration loading works\n\nTesting Directory Structure\n\u2705 Directory structure creation works\n\nSmoke Test Results\nPassed: 5/5\nTime: 1.28 seconds\n\u2705 All smoke tests passed!\nThe system is ready for dataset bias reproduction.\n",
+        "stderr": "/Users/sid47/Documents/augment-projects/Data_Set_Bias/venv/lib/python3.12/site-packages/torchvision/models/_utils.py:208: UserWarning: The parameter 'pretrained' is deprecated since 0.13 and may be removed in the future, please use 'weights' instead.\n  warnings.warn(\n/Users/sid47/Documents/augment-projects/Data_Set_Bias/venv/lib/python3.12/site-packages/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=None`.\n  warnings.warn(msg)\n"
+      }
+    },
+    "create_test_data": {
+      "status": "SUCCESS",
+      "timestamp": 1757193075.288428,
+      "details": {
+        "command": "./venv/bin/python scripts/create_test_data.py",
+        "stdout": "Creating Test Data for Pipeline Verification\nCreating 30 synthetic images for yfcc...\n\u2705 Created 30 images for yfcc\n   Images: /Users/sid47/dataset_bias_data/raw/yfcc/images\n   Index: /Users/sid47/dataset_bias_data/metadata/yfcc_index.csv\nCreating 30 synthetic images for cc...\n\u2705 Created 30 images for cc\n   Images: /Users/sid47/dataset_bias_data/raw/cc/images\n   Index: /Users/sid47/dataset_bias_data/metadata/cc_index.csv\nCreating 30 synthetic images for datacomp...\n\u2705 Created 30 images for datacomp\n   Images: /Users/sid47/dataset_bias_data/raw/datacomp/images\n   Index: /Users/sid47/dataset_bias_data/metadata/datacomp_index.csv\n\nTest Data Creation Complete!\nTotal images created: 90\nDatasets: ['yfcc', 'cc', 'datacomp']\n\nYou can now run the pipeline with:\n  make sample\n  make train combo=Combo-1\n  make eval combo=Combo-1\n",
+        "stderr": null
+      }
+    },
+    "data_sampling": {
+      "status": "SUCCESS",
+      "timestamp": 1757193077.216935,
+      "details": {
+        "command": "./venv/bin/python -m src.data.sampler --n-per-dataset 25 --val-size 8",
+        "stdout": "und 30 images for yfcc\n\u2705 Found 30 images for cc\n\u2705 Found 30 images for datacomp\n\u274c No data found for wit\n\u274c No data found for laion\n\u274c No data found for imagenet\n\nStarting dataset sampling\nTarget: 25 images per dataset\nValidation: 8 images per dataset\nAvailable datasets: yfcc, cc, datacomp\nLoaded 90 total records\nDeduplicating across datasets...\nDeduplicating \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501 100% 0:00:00\nRemoved 0 duplicates\nSampled 25 images from yfcc\nSampled 25 images from cc\nSampled 25 images from datacomp\n\u2705 yfcc: 20 train, 5 val\n\u2705 cc: 20 train, 5 val\n\u2705 datacomp: 20 train, 5 val\n\u2705 Saved manifests:\n  Train: /Users/sid47/dataset_bias_data/sampled/train_manifest.csv (60 images)\n  Val: /Users/sid47/dataset_bias_data/sampled/val_manifest.csv (15 images)\n  Combined: /Users/sid47/dataset_bias_data/sampled/combined_manifest.csv (75 \nimages)\n\nSampling Complete!\nFinal dataset sizes:\n  yfcc: 20 train, 5 val\n  cc: 20 train, 5 val\n  datacomp: 20 train, 5 val\nSampling completed successfully!\n",
+        "stderr": null
+      }
+    },
+    "model_training": {
+      "status": "SUCCESS",
+      "timestamp": 1757193103.553918,
+      "details": {
+        "command": "./venv/bin/python -m src.train.trainer --config experiments/Combo-1.yaml --epochs 5",
+        "stdout": "Val Acc: 33.33%\nLearning Rate: 0.000200\n  Epoch 3 Training \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501 100% 0:00:01\n  Epoch 3 Validation \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501 100% 0:00:00\n\nEpoch 3/5\nTrain Loss: 3.9785, Train Acc: 43.75%\nVal Loss: 3.4990, Val Acc: 40.00%\nLearning Rate: 0.000400\n\u2705 New best model!\n  Epoch 4 Training \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501 100% 0:00:01\n  Epoch 4 Validation \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501 100% 0:00:00\n\nEpoch 4/5\nTrain Loss: 3.2522, Train Acc: 43.75%\nVal Loss: 4.1473, Val Acc: 33.33%\nLearning Rate: 0.000600\n  Epoch 5 Training \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501 100% 0:00:01\n  Epoch 5 Validation \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501 100% 0:00:00\n\nEpoch 5/5\nTrain Loss: 4.0548, Train Acc: 21.88%\nVal Loss: 2.3562, Val Acc: 26.67%\nLearning Rate: 0.000800\n\nTraining Complete!\nBest validation accuracy: 40.00%\nTotal training time: 0.00 hours\nMetrics saved to: experiments/Combo-1/results/metrics.json\nTraining completed successfully!\n",
+        "stderr": "/Data_Set_Bias/venv/lib/python3.12/site-packages/torch/amp/autocast_mode.py:266: UserWarning: User provided device_type of 'cuda', but CUDA is not available. Disabling\n  warnings.warn(\n2025-09-06 17:11:22,200 - __main__ - INFO - Batch 0/1: Loss=1.1671, Acc=37.50%\n/Users/sid47/Documents/augment-projects/Data_Set_Bias/src/train/trainer.py:280: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.\n  with autocast():\n2025-09-06 17:11:24,876 - __main__ - INFO - Saved best checkpoint with validation accuracy: 33.33%\n2025-09-06 17:11:26,056 - __main__ - INFO - Batch 0/1: Loss=4.1699, Acc=50.00%\n2025-09-06 17:11:27,259 - __main__ - INFO - Batch 0/1: Loss=3.9785, Acc=43.75%\n2025-09-06 17:11:28,143 - __main__ - INFO - Saved best checkpoint with validation accuracy: 40.00%\n2025-09-06 17:11:29,267 - __main__ - INFO - Batch 0/1: Loss=3.2522, Acc=43.75%\n2025-09-06 17:11:30,524 - __main__ - INFO - Batch 0/1: Loss=4.0548, Acc=21.88%\n"
+      }
+    },
+    "model_evaluation": {
+      "status": "SUCCESS",
+      "timestamp": 1757193116.422019,
+      "details": {
+        "command": "./venv/bin/python -m src.eval.evaluator --config experiments/Combo-1.yaml --checkpoint experiments/Combo-1/checkpoints/best.ckpt",
+        "stdout": "\nStarting Evaluation\nEvaluating on datasets: ['cc', 'datacomp', 'yfcc']\nValidation batches: 1\nLoading model from experiments/Combo-1/checkpoints/best.ckpt\n\u2705 Model loaded successfully\nBest validation accuracy from training: 40.00%\n  Evaluating \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\n\u2705 Confusion matrix saved to experiments/Combo-1/results/confusion_matrix.png\n\nEvaluation Complete!\nOverall Accuracy: 40.00%\nChance Accuracy: 33.33%\nImprovement over chance: 6.67%\n\nPer-class Accuracy:\n  cc: 20.00%\n  datacomp: 20.00%\n  yfcc: 80.00%\n\nResults saved to: experiments/Combo-1/results/evaluation_results.json\nConfusion matrix: experiments/Combo-1/results/confusion_matrix.png\nEvaluation completed successfully!\n",
+        "stderr": "taset - INFO -   yfcc: 5 samples (class 2)\n2025-09-06 17:11:45,826 - src.models.model_factory - INFO - Creating convnext_tiny (convnext_tiny) with 3 classes\n2025-09-06 17:11:46,091 - src.models.model_factory - INFO - Model created: 27,822,435 total parameters, 27,822,435 trainable\n/Users/sid47/Documents/augment-projects/Data_Set_Bias/venv/lib/python3.12/site-packages/torch/utils/data/dataloader.py:684: UserWarning: 'pin_memory' argument is set as true but not supported on MPS now, then device pinned memory won't be used.\n  warnings.warn(warn_msg)\n/Users/sid47/Documents/augment-projects/Data_Set_Bias/src/eval/evaluator.py:110: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.\n  with autocast():\n/Users/sid47/Documents/augment-projects/Data_Set_Bias/venv/lib/python3.12/site-packages/torch/amp/autocast_mode.py:266: UserWarning: User provided device_type of 'cuda', but CUDA is not available. Disabling\n  warnings.warn(\n"
+      }
+    }
+  },
+  "final_results": {
+    "experiment": "Combo-1",
+    "datasets": [
+      "cc",
+      "datacomp",
+      "yfcc"
+    ],
+    "num_classes": 3,
+    "total_samples": 15,
+    "overall_accuracy": 40.0,
+    "overall_loss": 3.5260512828826904,
+    "per_class_accuracy": {
+      "cc": 20.0,
+      "datacomp": 20.0,
+      "yfcc": 80.0
+    },
+    "classification_report": {
+      "cc": {
+        "precision": 0.25,
+        "recall": 0.2,
+        "f1-score": 0.2222222222222222,
+        "support": 5.0
+      },
+      "datacomp": {
+        "precision": 0.3333333333333333,
+        "recall": 0.2,
+        "f1-score": 0.25,
+        "support": 5.0
+      },
+      "yfcc": {
+        "precision": 0.5,
+        "recall": 0.8,
+        "f1-score": 0.6153846153846154,
+        "support": 5.0
+      },
+      "accuracy": 0.4,
+      "macro avg": {
+        "precision": 0.3611111111111111,
+        "recall": 0.4000000000000001,
+        "f1-score": 0.36253561253561256,
+        "support": 15.0
+      },
+      "weighted avg": {
+        "precision": 0.36111111111111105,
+        "recall": 0.4,
+        "f1-score": 0.36253561253561256,
+        "support": 15.0
+      }
+    },
+    "chance_accuracy": 33.333333333333336
+  },
+  "total_time": 46.07183575630188,
+  "end_time": 1757193116.424194
+}

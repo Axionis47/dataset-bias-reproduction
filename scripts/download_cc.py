@@ -27,9 +27,8 @@ class CC12MDownloader(BaseDownloader):
 
     def __init__(self, base_dir: str = "~/dataset_bias_data", **kwargs):
         super().__init__("cc", base_dir, **kwargs)
-        # Official CC12M dataset URLs
-        self.train_url = "https://storage.googleapis.com/conceptual_12m/cc12m.tsv"
-        self.validation_url = "https://storage.googleapis.com/conceptual_12m/cc12m_val.tsv"
+        # Official CC12M dataset URLs from Google Drive
+        self.train_url = "https://drive.google.com/uc?id=1mZ_sHAp7jpMfFVY2TFN9wZioYujoYfCL"
 
     def get_dataset_info(self) -> Dict:
         """Get CC12M dataset information."""
